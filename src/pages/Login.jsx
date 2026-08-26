@@ -58,11 +58,11 @@ export default function Login() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex' }}>
+    <div className="login-shell">
       {/* Brand panel */}
       <div
+        className="login-brand"
         style={{
-          flex: '0 0 42%',
           background: 'var(--orange-gradient-diag)',
           display: 'flex',
           flexDirection: 'column',
@@ -131,7 +131,7 @@ export default function Login() {
       </div>
 
       {/* Form panel */}
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+      <div className="login-form-panel">
         <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: 380 }}>
           <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--slate-900)', margin: '0 0 6px' }}>
             Iniciar sesión

@@ -301,8 +301,8 @@ export default function VisitDetail() {
         </div>
       </div>
 
-      <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start' }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
+      <div className="detail-layout">
+        <div className="detail-main">
           <SectionCard title="Visitante">
             <InfoRow icon={IconUser} label="Nombre" value={`${visitor.first_name ?? ''} ${visitor.last_name ?? ''}`} />
             {visitor.company && <InfoRow icon={IconBuilding} label="Empresa" value={visitor.company} />}
@@ -326,7 +326,7 @@ export default function VisitDetail() {
         </div>
 
         {/* Decision panel: trust score, captured evidence and actions together — no scrolling needed to review. */}
-        <div style={{ width: 300, flexShrink: 0, position: 'sticky', top: 32 }}>
+        <div className="detail-side">
           {trustScore != null && (
             <div className="card card-pad" style={{ marginBottom: 20 }}>
               <h3 style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--slate-900)', margin: '0 0 16px' }}>

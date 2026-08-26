@@ -799,6 +799,142 @@ table.data-table {
   }
 }
 
+/* === Login layout === */
+.login-shell {
+  min-height: 100vh;
+  display: flex;
+}
+
+.login-brand {
+  flex: 0 0 42%;
+}
+
+.login-form-panel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+/* === Visit detail layout === */
+.detail-layout {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.detail-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.detail-side {
+  width: 300px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 32px;
+}
+
+/* === Responsive: tablet and down === */
+@media (max-width: 860px) {
+  .detail-layout {
+    flex-direction: column;
+  }
+
+  .detail-side {
+    width: 100%;
+    position: static;
+  }
+}
+
+@media (max-width: 760px) {
+  .login-shell {
+    flex-direction: column;
+  }
+
+  .login-brand {
+    display: none;
+  }
+}
+
+/* === Responsive: phones — sidebar becomes a compact top bar === */
+@media (max-width: 720px) {
+  .shell {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
+  .sidebar {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 14px;
+    border-right: none;
+    border-bottom: 1px solid var(--umbral-200);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .sidebar-brand {
+    padding: 0;
+    margin-right: 4px;
+  }
+
+  .sidebar-brand-text,
+  .sidebar-section-label {
+    display: none;
+  }
+
+  .sidebar-nav {
+    flex-direction: row;
+  }
+
+  .sidebar-link {
+    padding: 8px;
+  }
+
+  .sidebar-link-label {
+    display: none;
+  }
+
+  .sidebar-link.active::before {
+    left: 8px;
+    right: 8px;
+    top: auto;
+    bottom: -6px;
+    width: auto;
+    height: 3px;
+    border-radius: 3px 3px 0 0;
+  }
+
+  .sidebar-footer {
+    border-top: none;
+    padding-top: 0;
+    margin-top: 0;
+  }
+
+  .user-chip {
+    padding: 6px;
+  }
+
+  .user-chip-info {
+    display: none;
+  }
+
+  .main-inner {
+    padding: 20px 16px 40px;
+  }
+
+  .page-header {
+    flex-wrap: wrap;
+    row-gap: 12px;
+  }
+}
+
 /* === Scrollbar niceties === */
 ::-webkit-scrollbar {
   width: 10px;

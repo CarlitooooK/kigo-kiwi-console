@@ -46,7 +46,7 @@ export default function ConsoleShell() {
                 className={({ isActive }) => `sidebar-link${isActive ? ' active' : ''}`}
               >
                 <Icon size={18} />
-                {item.label}
+                <span className="sidebar-link-label">{item.label}</span>
               </NavLink>
             )
           })}
