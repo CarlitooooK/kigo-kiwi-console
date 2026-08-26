@@ -1,7 +1,7 @@
 import { supabase } from './supabase'
 
-/** Gets visits for an organization (console), optionally filtered by status. */
-export async function getVisitsByOrganization(organizationId, { statusFilter, limit = 100 } = {}) {
+/** Gets visits for an organization (console), optionally filtered by status and/or a creation date range. */
+export async function getVisitsByOrganization(organizationId, { statusFilter, from, to, limit = 500 } = {}) {
   let query = supabase
     .from('visits')
     .select('*, visitors(*), visit_evidence(type, storage_path), trust_evaluations(score, created_at)')
@@ -9,6 +9,12 @@ export async function getVisitsByOrganization(organizationId, { statusFilter, li
 
   if (statusFilter) {
     query = query.eq('status', statusFilter)
+  }
+  if (from) {
+    query = query.gte('created_at', from.toISOString())
+  }
+  if (to) {
+    query = query.lt('created_at', to.toISOString())
   }
 
   const { data, error } = await query.order('created_at', { ascending: false }).limit(limit)

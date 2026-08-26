@@ -3,14 +3,16 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase, ORGANIZATION_ID } from '../lib/supabase'
 import { getVisitsByOrganization } from '../lib/visitRepository'
 import { VISIT_FILTERS, avatarColor } from '../lib/status'
+import { PERIOD_FILTERS, getPeriodRange } from '../lib/period'
 import { ACTIONABLE_STATUSES, latestTrustScore, primaryEvidence, evidenceBucket } from '../lib/visitMeta'
 import { trustColor, trustLabel } from '../lib/trust'
+import { exportVisitsPdf } from '../lib/exportPdf'
 import PageHeader from '../components/PageHeader'
 import StatusBadge from '../components/StatusBadge'
 import TrustRing from '../components/TrustRing'
 import KigoError from '../components/KigoError'
 import KigoEmpty from '../components/KigoEmpty'
-import { IconRefresh, IconCalendar, IconImage } from '../components/icons'
+import { IconRefresh, IconCalendar, IconImage, IconDownload } from '../components/icons'
 
 function formatTime(iso) {
   if (!iso) return ''
@@ -46,13 +48,38 @@ export default function Visits() {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const filterKey = searchParams.get('filter') ?? 'all'
+  const periodKey = searchParams.get('period') ?? 'all'
   const [visits, setVisits] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [photoUrls, setPhotoUrls] = useState({})
   const [photosLoading, setPhotosLoading] = useState(false)
+  const [exporting, setExporting] = useState(false)
 
   const activeFilter = VISIT_FILTERS.find((f) => f.key === filterKey) ?? VISIT_FILTERS[0]
+  const range = getPeriodRange(periodKey)
+
+  async function handleExport() {
+    setExporting(true)
+    try {
+      await exportVisitsPdf({
+        visits,
+        periodLabel: range?.label ?? 'Todo el historial',
+        statusLabel: activeFilter.label,
+      })
+    } finally {
+      setExporting(false)
+    }
+  }
+
+  function setParam(key, value) {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev)
+      if (value == null || value === 'all') next.delete(key)
+      else next.set(key, value)
+      return next
+    })
+  }
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -60,7 +87,8 @@ export default function Visits() {
     try {
       const data = await getVisitsByOrganization(ORGANIZATION_ID, {
         statusFilter: activeFilter.status,
-        limit: 100,
+        from: range?.start,
+        to: range?.end,
       })
       setVisits(data)
     } catch (e) {
@@ -68,7 +96,7 @@ export default function Visits() {
     } finally {
       setLoading(false)
     }
-  }, [activeFilter.status])
+  }, [activeFilter.status, periodKey])
 
   useEffect(() => {
     load()
@@ -115,24 +143,54 @@ export default function Visits() {
     <div>
       <PageHeader
         title="Visitas"
-        subtitle={`${visits.length} ${visits.length === 1 ? 'registro' : 'registros'}`}
+        subtitle={
+          range
+            ? `${visits.length} ${visits.length === 1 ? 'registro' : 'registros'} · ${range.label}`
+            : `${visits.length} ${visits.length === 1 ? 'registro' : 'registros'}`
+        }
         actions={
-          <button className="icon-btn" onClick={load} title="Actualizar">
-            <IconRefresh size={17} />
-          </button>
+          <>
+            <button className="btn btn-outline" onClick={handleExport} disabled={loading || exporting || visits.length === 0}>
+              {exporting ? <span className="spinner spinner-sm" /> : <IconDownload size={16} />}
+              {exporting ? 'Exportando…' : 'Exportar PDF'}
+            </button>
+            <button className="icon-btn" onClick={load} title="Actualizar">
+              <IconRefresh size={17} />
+            </button>
+          </>
         }
       />
 
-      <div className="seg-tabs" style={{ marginBottom: 20 }}>
-        {VISIT_FILTERS.map((f) => (
-          <button
-            key={f.key}
-            className={`seg-tab${f.key === filterKey ? ' active' : ''}`}
-            onClick={() => setSearchParams(f.key === 'all' ? {} : { filter: f.key })}
-          >
-            {f.label}
-          </button>
-        ))}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24, marginBottom: 20 }}>
+        <div>
+          <div className="filter-group-label">Estado</div>
+          <div className="seg-tabs">
+            {VISIT_FILTERS.map((f) => (
+              <button
+                key={f.key}
+                className={`seg-tab${f.key === filterKey ? ' active' : ''}`}
+                onClick={() => setParam('filter', f.key)}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <div className="filter-group-label">Periodo</div>
+          <div className="seg-tabs">
+            {PERIOD_FILTERS.map((p) => (
+              <button
+                key={p.key}
+                className={`seg-tab${p.key === periodKey ? ' active' : ''}`}
+                onClick={() => setParam('period', p.key)}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
       {loading ? (

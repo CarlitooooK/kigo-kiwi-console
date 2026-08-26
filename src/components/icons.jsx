@@ -190,6 +190,14 @@ export const IconTag = (p) => (
   </Svg>
 )
 
+export const IconDownload = (p) => (
+  <Svg {...p}>
+    <path d="M12 3v12" />
+    <path d="M7 10l5 5 5-5" />
+    <path d="M4 19h16" />
+  </Svg>
+)
+
 export const IconSearch = (p) => (
   <Svg {...p}>
     <circle cx="11" cy="11" r="7" />
