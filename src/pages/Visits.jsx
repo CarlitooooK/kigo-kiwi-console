@@ -255,7 +255,7 @@ export default function Visits() {
                             <div className="cell-title">
                               {firstName} {lastName}
                             </div>
-                            {visitor.email && <div className="cell-sub">{visitor.email}</div>}
+                            {visitor.phone && <div className="cell-sub">{visitor.phone}</div>}
                           </div>
                         </div>
                       </td>

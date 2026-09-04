@@ -15,7 +15,7 @@ export default function JourneyTimeline({ events }) {
     <div>
       {events.map((event, index) => {
         const isLast = index === events.length - 1
-        const meta = eventMeta(event.event_type)
+        const meta = eventMeta(event.event_type, event.payload)
         const Icon = meta.icon
 
         return (

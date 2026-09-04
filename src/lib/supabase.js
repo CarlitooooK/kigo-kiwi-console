@@ -9,3 +9,15 @@ export const ORGANIZATION_ID =
 export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey)
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
+/// A second client that NEVER carries a user session — it always acts as the
+/// `anon` role. The public invite form uses this so that, even if a host is
+/// logged into the console (role `authenticated`), the visitor/visit inserts
+/// go through the same anon RLS policy the kiosk relies on.
+export const supabaseAnon = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: false,
+    autoRefreshToken: false,
+    storageKey: 'kigo-anon-no-session',
+  },
+})

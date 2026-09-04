@@ -24,15 +24,30 @@ const EVENT_META = {
   CHECKED_IN: { label: 'Check-in', color: 'var(--green-600)', bg: 'var(--green-100)', icon: IconCheck },
   CHECKED_OUT: { label: 'Check-out', color: 'var(--sky-900)', bg: 'var(--sky-50)', icon: IconLogout },
   ESCALATED: { label: 'Escalado', color: '#a16207', bg: 'var(--yellow-50)', icon: IconClock },
+  CANCELLED: { label: 'Registro cancelado', color: 'var(--red-500)', bg: 'var(--red-100)', icon: IconX },
 }
 
-export function eventMeta(eventType) {
-  return (
-    EVENT_META[eventType] ?? {
-      label: eventType,
-      color: 'var(--gray-500)',
-      bg: 'var(--umbral-100)',
-      icon: IconClock,
+// Human-readable labels for cancellation reasons (payload.reason).
+const CANCEL_REASON_LABEL = {
+  CONSENT_DECLINED: 'Rechazó el aviso de privacidad',
+  ABANDONED: 'Registro no completado',
+}
+
+export function eventMeta(eventType, payload) {
+  const base = EVENT_META[eventType]
+  if (base) {
+    // Refine the CANCELLED label with its reason when available.
+    if (eventType === 'CANCELLED') {
+      const reason = payload?.reason
+      const label = CANCEL_REASON_LABEL[reason] ?? base.label
+      return { ...base, label }
     }
-  )
+    return base
+  }
+  return {
+    label: eventType,
+    color: 'var(--gray-500)',
+    bg: 'var(--umbral-100)',
+    icon: IconClock,
+  }
 }
