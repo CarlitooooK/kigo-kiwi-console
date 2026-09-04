@@ -16,7 +16,6 @@ import {
   IconCheck,
   IconX,
   IconTag,
-  IconMail,
   IconPhone,
   IconBuilding,
   IconUser,
@@ -306,7 +305,6 @@ export default function VisitDetail() {
           <SectionCard title="Visitante">
             <InfoRow icon={IconUser} label="Nombre" value={`${visitor.first_name ?? ''} ${visitor.last_name ?? ''}`} />
             {visitor.company && <InfoRow icon={IconBuilding} label="Empresa" value={visitor.company} />}
-            {visitor.email && <InfoRow icon={IconMail} label="Correo" value={visitor.email} />}
             {visitor.phone && <InfoRow icon={IconPhone} label="Teléfono" value={visitor.phone} />}
             {visitor.visitor_type && <InfoRow icon={IconTag} label="Tipo" value={visitor.visitor_type} />}
           </SectionCard>
